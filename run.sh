@@ -1,11 +1,5 @@
-python combineCTM.py data/txt/words_QATS.ctm data/txt/phoneme_HU.ctm words_HU.ctm
-python makeFeat.py words_HU.ctm data/txt/{E,K,S}.txt.bw words_HU_data.feat
-
-python combineCTM.py data/txt/words_QATS.ctm data/txt/phoneme_CZ.ctm words_CZ.ctm
-python makeFeat.py words_CZ.ctm data/txt/{E,K,S}.txt.bw words_CZ_data.feat
-
-python combineCTM.py data/txt/words_QATS.ctm data/txt/phoneme_RU.ctm words_RU.ctm
-python makeFeat.py words_RU.ctm data/txt/{E,K,S}.txt.bw words_RU_data.feat
-
+for phoneme in HU RU CZ; do
+    python combineCTM.py --wordindex data/txt/words_QATS.ctm data/txt/phoneme_${phoneme}.ctm words_${phoneme}.ctm
+    python makeFeat.py --wordindex words_${phoneme}.ctm data/txt/{E,K,S}.txt.bw words_${phoneme}_data.feat
+done 
 rm words_??.ctm
-

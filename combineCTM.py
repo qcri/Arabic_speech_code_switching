@@ -38,6 +38,8 @@ def get_args():
                         help='input_phoneme_ctm_file')
     parser.add_argument('ctm_out', type=argparse.FileType('w'),
                         help='output_ctm_file')
+    parser.add_argument('--wordindex', action="store_true", default=False,
+                        help='get the word index from the word ctm')
     parser.add_argument('--verbose', type=int, default=0,
                         help="Higher value for more verbose logging.")
     args = parser.parse_args()
@@ -50,7 +52,7 @@ def get_args():
 
     
   
-def read_ctm(ctm_file):
+def read_ctm(ctm_file, _keep_word_index):
     """Read CTM from ctm_file into a dictionary of values indexed by the
     utterance.
     It is assumed to be sorted by the utterance-id.
@@ -86,6 +88,9 @@ def read_ctm(ctm_file):
         word = parts[4:]
         
         if utt not in ctms: ctms[utt] = []
+        
+        if  _keep_word_index : word.insert(0,   str(num_lines))
+        
             
         ctms[utt].append([utt, confidence, start, end, duration] + word)
 
@@ -103,8 +108,11 @@ def compare (word, word_start, word_end, phone, phone_start, phone_end):
         return True
 
     
-def merge_ctm (_wordctm, _phonectm):
-    ctm_lines = ["#id word_index word word_conf word_start word_duration word_end phone phone_conf phone_start phone_duration phone_end"] 
+def merge_ctm (_wordctm, _phonectm, _keep_word_index):
+    if _keep_word_index:
+        ctm_lines = ["#id word_index_in_sentence word_index_in_word_ctm word word_conf word_start word_duration word_end phone phone_conf phone_start phone_duration phone_end"] 
+    else: 
+        ctm_lines = ["#id word_index_in_sentence word word_conf word_start word_duration word_end phone phone_conf phone_start phone_duration phone_end"] 
     for idx, id in enumerate(_wordctm):
         
         _wordctm[id].sort(key=itemgetter(2))
@@ -113,7 +121,7 @@ def merge_ctm (_wordctm, _phonectm):
             word_phone_overlap=False
             #print(idx2, val2)
             
-            word = val2 [-1]
+            if  _keep_word_index: word = val2 [-2] + ' ' + val2 [-1]
             word_start = val2 [2]
             word_end = val2 [3]
             word_conf = val2 [1]
@@ -156,9 +164,9 @@ def write_ctm(ctm_lines, out_file):
 def main():
     """The main function which parses arguments and call run()."""
     args = get_args()
-    word_ctm = read_ctm(args.ctm_in_words)
-    phoneme_ctm = read_ctm(args.ctm_in_phonemes)
-    combine_ctm = merge_ctm (word_ctm, phoneme_ctm)
+    word_ctm = read_ctm(args.ctm_in_words,args.wordindex)
+    phoneme_ctm = read_ctm(args.ctm_in_phonemes,False)
+    combine_ctm = merge_ctm (word_ctm, phoneme_ctm,args.wordindex)
     write_ctm(combine_ctm, args.ctm_out)
     args.ctm_out.close()
     logger.info("Wrote CTM for %d recordings.", len(phoneme_ctm))

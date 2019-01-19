@@ -42,6 +42,8 @@ def get_args():
                         help='input_cs_3')
     parser.add_argument('feat_out', type=argparse.FileType('w'),
                         help='output_feats')
+    parser.add_argument('--wordindex', action="store_true", default=False,
+                        help='get the word index from the word ctm')
     parser.add_argument('--verbose', type=int, default=0,
                         help="Higher value for more verbose logging.")
     args = parser.parse_args()
@@ -81,7 +83,7 @@ def get_label (word,word_with_label):
             return parts[1]
     return "NULL"
     
-def merge_combine_ctm_labels (combine_ctm_file,labels1,labels2,labels3):
+def merge_combine_ctm_labels (combine_ctm_file,labels1,labels2,labels3,_keep_word_index):
     num_lines = 0
     feats = []
     for line in combine_ctm_file:
@@ -92,6 +94,7 @@ def merge_combine_ctm_labels (combine_ctm_file,labels1,labels2,labels3):
         index = int (line.split() [1])
         
         word = line.split() [2]
+        if _keep_word_index: word = line.split() [3]
         l1=get_label (word, labels1[id][index-1])
         l2=get_label (word, labels2[id][index-1])
         l3=get_label (word, labels3[id][index-1])
@@ -110,7 +113,7 @@ def main():
     """The main function which parses arguments and call run()."""
     args = get_args()
     (labels1, labels2, labels3) = read_labels (args.cs_labels_1, args.cs_labels_2, args.cs_labels_3)
-    feats = merge_combine_ctm_labels (args.ctm_phone_words,labels1,labels2,labels3)
+    feats = merge_combine_ctm_labels (args.ctm_phone_words,labels1,labels2,labels3, args.wordindex)
     
     write_feats(feats, args.feat_out)
     args.feat_out.close()
