@@ -141,7 +141,7 @@ def merge_ctm (_wordctm, _phonectm, _keep_word_index):
                     _phonectm [id].pop(idx3)
                     continue
                 if (compare (word, word_start, word_end, phone, phone_start, phone_end)):
-                    combied_line = id, idx2+1, word, word_conf, word_start, word_duration, word_end, phone, phone_conf, phone_start, phone_duration, phone_end
+                    combied_line = id, idx2+1, word, word_conf, word_start, ("%0.2f" % word_duration), ("%0.2f" % word_end), phone, phone_conf, phone_start, ("%0.2f" % phone_duration), ("%0.2f" % phone_end)
                     #print (combied_line)
                     ctm_lines.append(" ".join(map(str,combied_line)))
                     word_phone_overlap=True
