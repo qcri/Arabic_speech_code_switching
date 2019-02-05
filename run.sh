@@ -5,6 +5,7 @@ done
 rm words_??.ctm
 
 
+for x in data/GALE/txt/*bz2; do  bunzip2 $x;  done
 for phoneme in HU RU CZ; do
     python combineCTM.py --wordindex data/GALE/txt/words_QATS.ctm data/GALE/txt/phoneme_${phoneme}.ctm words_${phoneme}.ctm
     python makeFeat.py --wordindex words_${phoneme}.ctm data/GALE/txt/{text.bw.labels,text.bw.labels,text.bw.labels} data/GALE/txt/words_${phoneme}_data.feat$$
