@@ -23,7 +23,7 @@ More details in paper:
 }
 ```
 
-also available in [link to ResearchGate](http://google.com), [link to arXiv](https://arxiv.org)
+also available in [link to ResearchGate](https://www.researchgate.net/publication/343215422_Effects_of_Dialectal_Code-Switching_on_Speech_Modules_A_Study_using_Egyptian_Arabic_Broadcast_Speech), [link to arXiv - Will be available later](https://arxiv.org)
 
 ## Data Format
 *DACS_word_level.feat*
