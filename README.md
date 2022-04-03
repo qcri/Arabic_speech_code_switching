@@ -35,7 +35,7 @@ where
 
 `word_index_in_sentence` indicates the position of the word in the utterance.
 
-`word` manually transcribed word
+`word` manually transcribed word (in Buckwalter transliteration format)
 
 `word_start` start time of the word in secs.
 
